@@ -177,7 +177,6 @@
         $relatorio = Relatorios::printPdf2($jsonData);
         $response->getBody()->write( $relatorio );
         $newResponse = $response->withHeader('Content-type', 'application/json');
-        // $newResponse = $response->withHeader('Content-type', 'application/pdf');
         return $response;
     })->add(new AuthBeforeMiddleware());
     
