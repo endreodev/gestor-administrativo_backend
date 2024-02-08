@@ -1,5 +1,4 @@
-<?php 
-
+<?php  
     // DB
 	define('DB_DRIVER'	, 'mysqli');
 	define('DB_HOST'	, 'srv1078.hstgr.io');

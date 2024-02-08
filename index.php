@@ -3,6 +3,7 @@
 
     require __DIR__ . '/vendor/autoload.php';
 
+    date_default_timezone_set('America/Cuiaba');
 
     use Psr\Http\Message\ServerRequestInterface as Request;
     use Psr\Http\Server\RequestHandlerInterface as RequestHandler;

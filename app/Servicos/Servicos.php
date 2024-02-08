@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Servicos;
 
 use stdClass;
@@ -10,6 +9,7 @@ class Servicos {
 
 
 	public static function getAllServicos($id_admin,$empresa_id=null,$filtro=null){ 
+
 		$addSql = "";
 		$addSql1 = "";
 
@@ -60,7 +60,7 @@ class Servicos {
 			return json_encode(array('mensage'=>'Impossivel adicionar usuario comum','erro'=>true )); 
 		}
 
-		return json_encode(array('status'=>array('','aberto','andamento','fechado','hoje','vencido') ));
+		return json_encode(array('status'=>array('','aberto','andamento','finalizado','hoje','vencido') ));
 	} 
 
 

@@ -1,107 +1,13 @@
 <?php
+
     namespace App\Relatorios;
 
     use TCPDF;
 
     class Relatorios {
 
-        public function printPdf($jsonData){
-
-            // Decodifica o JSON para um objeto PHP
-            $data = json_decode($jsonData);
-
-            // Inicializa o TCPDF
-            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-            // set document information
-            $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetAuthor('Safety Sindicos Profissionais');
-            $pdf->SetTitle('Safety Sindicos Profissionais');
-            // $pdf->SetSubject('TCPDF Tutorial');
-            // $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
-
-            // set default header data
-            // $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
-
-            // set header and footer fonts
-            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-            // set default monospaced font
-            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-            // set margins
-            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-            // set auto page breaks
-            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-            // set image scale factor
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-            // set font
-            $pdf->SetFont('dejavusans', '', 10);
-
-            // add a page
-            $pdf->AddPage();
-
-            $html = <<<EOF
-            <h1>ID: {$data->id} - {$data->titulo}</h1>  
-            <br>
-            <h3>
-                {$data->descricao} 
-            </h3>
-            <ul style="font-size:14pt;list-style-type:img|png|4|4|images/logo_example.png">
-                <li>test custom bullet image</li>
-                <li>test custom bullet image</li>
-                <li>test custom bullet image</li>
-                <li>test custom bullet image</li>
-            <ul>
-            EOF;
-
-            // output the HTML content
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-
-
-
-
-            // Imprime a imagem
-            if (!empty($data->imagem) && is_array($data->imagem)) {
-                $pdf->Ln(10); // Adiciona uma linha
-                foreach ($data->imagem as $img) {
-                    $pdf->Image('@' . base64_decode($img->imagem_base64), '', '', 40, 40, 'PNG');
-                    $pdf->Ln(50); // Espaço após a imagem
-                }
-            }
-
-            // Imprime informações adicionais
-            if (!empty($data->informacao) && is_array($data->informacao)) {
-                foreach ($data->informacao as $info) {
-                    $pdf->Write(0, $info->descricao, '', 0, 'L', true, 0, false, false, 0);
-                }
-            }
-
-            // Fecha e exibe o arquivo PDF
-            // $pdf->Output('relatorio.pdf', 'I');
-
-            // Salva o PDF em uma string
-            $pdfString = $pdf->Output('nome_do_arquivo.pdf', 'S');
-
-            return  $pdfString;
-            // Codifica o PDF em base64
-            // $base64 = base64_encode($pdfString);
-            // return $base64;
-
-        
-        }
-
-
         public static function printPdf2($jsonData){
             // composer require mpdf/mpdf
-
             // Crie uma instância do mPDF
             $mpdf = new \Mpdf\Mpdf();
 
@@ -110,8 +16,6 @@
             ini_set('pcre.backtrack_limit', '10000000'); // Aumenta o limite para 10 milhões
             // Agora você pode chamar WriteHTML() com seu HTML grande
             // $mpdf->WriteHTML($seu_html_grande);
-
-
 
             // Observações e imagens - Exemplo estático
             $htmlContent = "
@@ -208,6 +112,26 @@
                 <div class="col s12 l12">
                     <div class="card col s12">
                         <div class="card-content">
+                        
+                    <div class="header-info">
+  
+                         <div class="header-info">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>'.$dados->id.'</th>
+                                        <th>Relaório de Serviços</th>
+                                        <th>Emissão</th>
+                                        <th>'.date('d-m-Y').'</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <br/>
+                    
                             <div class="container">
                                 <div class="header-container">
 
@@ -217,21 +141,28 @@
                                                 <img src="assets/img/logoempresa.png" alt="Logo" width="100px">
                                             </th>
                                         </tr>
-                                        <tr> rowspan="3"
-                                            <th scope="col">Empresa:</th>
-                                            <th scope="col">SAFETY SINDICOS PROFISSIONAIS</th> 
+                                        <tr>
+                                            <th scope="col" >Empresa:</th>
+                                            <th scope="col" colspan="3">SAFETY SINDICOS PROFISSIONAIS</th> 
                                         </tr>
                                         <tr>
                                             <th scope="row">Endereço:</th>
-                                            <td>Complexo Empresarial Ataíde Ferreira da Silva - R.Nossa Sra. de Carmo, 46 - Sala 30 - Centro Norte</td> 
+                                            <td colspan="3">
+                                                Av. Historiador Rubens de Mendonça, 1856 <br>(sala 605) - Bosque da Saude, Cuiabá - MT, 78050-000
+                                                <br>Edifício Cuiabá Office Tower
+                                            </td> 
                                         </tr>
                                         <tr>
                                             <th scope="row">Cidade:</th>
-                                            <td>Várzea Grande</td> 
+                                            <td>Cuiabá</td>
+                                            <th>Estado:</th>
+                                            <td>MT</td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Estado:</th>
-                                            <td>MTEmpresa</td> 
+                                            <th>Contato</th>
+                                            <td>(65) 9 8121-2085</td>
+                                            <th>Email:</th>
+                                            <td>contato@safetysindicos.com.br</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -268,11 +199,11 @@
                                         
                                         <tr>
                                             <th>Data Inicial</th>
-                                            <td>'.$dados->data_inicio.'</td>
+                                            <td>'.date("d/m/Y", strtotime($dados->data_inicio)).'</td>
                                             <th>Data Final</th>
-                                            <td>'.$dados->data_fim.'</td>
+                                            <td>'.date("d/m/Y", strtotime($dados->data_fim)).'</td>
                                             <th>Data Conclusão</th>
-                                            <td>'.$dados->updated_at.'</td>
+                                            <td>'.date("d/m/Y", strtotime($dados->updated_at)).'</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -308,7 +239,7 @@
                                     <tr>
                                         <td>'.$valor->id.'</td>
                                         <td>'.$valor->descricao.'</td>
-                                        <td>'.$valor->created_at.'</td>
+                                        <td>'.date("d/m/Y", strtotime($valor->created_at)).'</td>
                                     </tr>';
                                 }
                 
@@ -326,48 +257,49 @@
                 <div class="card col s12">
                     <div class="card-content">
                         <div class="header-info">';
+                        
+                        if (!empty($dados->imagem)) {
+                            // Contador para verificar cada grupo de dois nomes
+                            $contador = 0;
 
-                        // Contador para verificar cada grupo de dois nomes
-                        $contador = 0;
-
-                        foreach ($dados->imagem as $objeto) {
-                            // Para cada início de um novo par de nomes, abre uma nova tabela
-                            if ($contador % 2 == 0) {
-                                if ($contador > 0) {
-                                    // Fecha a tabela anterior, exceto na primeira vez
-                                    $htmlContent .=  "</tbody></table>";
+                            foreach ($dados->imagem as $objeto) {
+                                // Para cada início de um novo par de nomes, abre uma nova tabela
+                                if ($contador % 2 == 0) {
+                                    if ($contador > 0) {
+                                        // Fecha a tabela anterior, exceto na primeira vez
+                                        $htmlContent .=  "</tbody></table>";
+                                    }
+                                    $htmlContent .=  "<table border='1' style='margin-right: 20px;'><tbody>";
                                 }
-                                $htmlContent .=  "<table border='1' style='margin-right: 20px;'><tbody>";
+                                
+                                // Coloca o nome na célula da tabela
+                                // Se for o primeiro nome do par, abre uma nova linha
+                                if ($contador % 2 == 0) {
+                                    $htmlContent .=  '<tr>
+                                                        <td>
+                                                            <img src="data:image/*;base64,'.$objeto->imagem_base64.'" width="250px" height="250px"/>
+                                                            <p>'.$objeto->descricao.'</p>
+                                                        </td>';
+                                } else {
+                                    // Se for o segundo nome do par, coloca na segunda coluna e fecha a linha
+                                    $htmlContent .=  '  <td>
+                                                            <img src="data:image/*;base64,'.$objeto->imagem_base64.'" width="250px" height="250px"/>
+                                                            <p>'.$objeto->descricao.'</p>
+                                                        </td>
+                                                    </tr>';
+                                }
+                                
+                                $contador++;
                             }
-                            
-                            // Coloca o nome na célula da tabela
-                            // Se for o primeiro nome do par, abre uma nova linha
-                            if ($contador % 2 == 0) {
-                                $htmlContent .=  '<tr>
-                                                    <td>
-                                                        <img src="data:image/png;base64,'.$objeto->imagem_base64.'" width="300px" height="300px"/>
-                                                        <p>'.$objeto->descricao.'</p>
-                                                    </td>';
-                            } else {
-                                // Se for o segundo nome do par, coloca na segunda coluna e fecha a linha
-                                $htmlContent .=  '  <td>
-                                                        <img src="data:image/png;base64,'.$objeto->imagem_base64.'" width="300px" height="300px"/>
-                                                        <p>'.$objeto->descricao.'</p>
-                                                    </td>
-                                                </tr>';
+
+                            // Fecha a última tabela se a quantidade de nomes for ímpar
+                            if ($contador % 2 != 0) {
+                                $htmlContent .=  "<td></td></tr>";
                             }
+
+                            $htmlContent .=  "</tbody></table>";
                             
-                            $contador++;
                         }
-
-                        // Fecha a última tabela se a quantidade de nomes for ímpar
-                        if ($contador % 2 != 0) {
-                            $htmlContent .=  "<td></td></tr>";
-                        }
-
-                        $htmlContent .=  "</tbody></table>";
-                        // $htmlContent .=  '</div>';
-
                             
                         $htmlContent .= ' 
                        

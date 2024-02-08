@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Cuiaba');
 use App\Auth\Auth;
 
 //Home para auxiliar usuario

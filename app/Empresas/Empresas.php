@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace App\Empresas;
 
 use App\DB\DB;
