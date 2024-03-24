@@ -97,29 +97,55 @@
 
     //ADICIONAR IMAGEM AO ID DO SERVIÇO
     $app->post('/api/servicos/imagem/{id}', function ($request, $response, $args) {
-        $id_admin = $request->getHeader('id_admin');
-        $id = $args['id'];
-        
-        if (isset($_FILES['imagem'])) {
-            $imagem = $_FILES['imagem']['tmp_name'];
-            $nome = $_FILES['imagem']['name'];
-        
-            if (is_uploaded_file($imagem)) {
-                $imagem = file_get_contents($imagem);
-    
-                // Tratando o campo descrição
-                $descricao = $parsedBody['descricao'] ?? '';
-    
-                // Salve os dados conforme necessário
-                $rest = Servicos::uploadImagem($imagem , $descricao , $id);
-                $response->getBody()->write( $rest );
-                $newResponse = $response->withHeader('Content-type', 'application/json');
-                return $newResponse;
 
+        $id_admin = $request->getHeader('id_admin');  
+        $input = $request->getParsedBody();
+        $id = $args['id'];
+
+
+        if (is_array($_FILES['imagem']['name'])) {
+            $totalArquivos = count($_FILES['imagem']['name']);
+            for ($i = 0; $i < $totalArquivos; $i++) {
+
+                $imagemTmpName = $_FILES['imagem']['tmp_name'][$i];
+                $imagemName = $_FILES['imagem']['name'][$i];
+                
+                if (is_uploaded_file($imagemTmpName)) {
+                    $imagem = file_get_contents($imagemTmpName);
+                    $descricao = $input['descricao'] ?? '';
+                    // Salve os dados conforme necessário
+                    $rest = Servicos::uploadImagem($imagem , $descricao , $id);
+                }
+
+            }
+
+            $response->getBody()->write( $rest );
+            $newResponse = $response->withHeader('Content-type', 'application/json');
+            return $newResponse;
+
+        } else {
+
+            if (isset($_FILES['imagem'])) {
+                $imagem = $_FILES['imagem']['tmp_name'];
+                $nome = $_FILES['imagem']['name'];
+            
+                if (is_uploaded_file($imagem)) {
+                    
+                    $imagem = file_get_contents($imagem);
+                    $descricao = $input['descricao'] ?? '';
+                    // Salve os dados conforme necessário
+                    $rest = Servicos::uploadImagem($imagem , $descricao , $id);
+                    $response->getBody()->write( $rest );
+                    $newResponse = $response->withHeader('Content-type', 'application/json');
+                    return $newResponse;
+    
+                }
             }
         }
 
-        return $response;
+        $response->getBody()->write(array("mensagem" => "erro no envio das imagens"));
+        $newResponse = $response->withHeader('Content-type', 'application/json');
+        return $newResponse;
 
     })->add(new AuthBeforeMiddleware());
 
